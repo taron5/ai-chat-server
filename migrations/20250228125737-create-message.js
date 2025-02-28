@@ -18,7 +18,7 @@ module.exports = {
         allowNull: false,
         onDelete: 'cascade',
       },
-      messasge: {
+      message: {
         type: Sequelize.STRING,
         allowNull: false,
       },
@@ -36,7 +36,7 @@ module.exports = {
       }
     });
   },
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     await queryInterface.dropTable('Messages');
   }
 };

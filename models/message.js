@@ -1,7 +1,6 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Message extends Model {
     static associate({Chat}) {
@@ -19,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       onDelete: 'cascade',
     },
-    messasge: {
+    message: {
       type: DataTypes.STRING,
       allowNull: false,
     },

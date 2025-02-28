@@ -66,4 +66,6 @@ const startServer = async () => {
   }
 }
 
-startServer().then((port) => console.log('Server started on port ' + port)).catch(error => console.error('Error starting server', error));
+startServer()
+.then((port) => console.log('Server started on port ' + port))
+.catch(error => console.error('Error starting server', error));

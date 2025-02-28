@@ -1,9 +1,9 @@
-const { v4: uuidv4 } = require('uuid');
 const { Chat, Message } = require('../models');
 
 class ChatService {
     async saveMessage(messageData) {
         try {
+            
             if (!messageData.chatId) {
                 const newChat = await Chat.create({
                     name: 'New Chat',
@@ -11,7 +11,8 @@ class ChatService {
                 })
                 messageData.chatId = newChat.id;
             }
-            const userMessage = await Message.create({
+
+            await Message.create({
                 chatId: messageData.chatId,
                 message: messageData.message,
                 sender: 'user',
@@ -41,15 +42,38 @@ class ChatService {
                 sender: 'ai'
             });
 
+            await new Promise((resolve) => setTimeout(() => resolve(), 1600))
+
             return {
                 success: true,
-                messages: {
-                    user: userMessage,
-                    assistant: assistantMessage
-                }
+                message: assistantMessage
             };
         } catch (error) {
             console.error('Error saving messages:', error);
+            throw error;
+        }
+    }
+
+    async getMessagesByChatId(chatId) {
+        try {
+            const messages = await Message.findAll({
+                where: { chatId },
+                order: [['createdAt', 'ASC']],
+                attributes: ['id', 'message', 'sender', 'createdAt'],
+                include: {
+                    model: Chat,
+                    as: 'chat',
+                    attributes: ['name']
+                }
+            });
+
+            return {
+                success: true,
+                chatId,
+                messages
+            };
+        } catch (error) {
+            console.error('Error fetching messages:', error);
             throw error;
         }
     }
@@ -79,6 +103,7 @@ class ChatService {
                 include: {
                     model: Message,
                     as: 'messages',
+                    order: [['sender', 'ASC']],
                 }
             });
             

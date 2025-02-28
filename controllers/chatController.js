@@ -12,8 +12,8 @@ const createChatSchema = Joi.object({
 });
 
 const messageSchema = Joi.object({
-    chatId: Joi.string().messages({
-        'string.empty': 'Chat ID cannot be empty',
+    chatId: Joi.number().messages({
+        'any.required': 'Chat ID is required'
     }),
     message: Joi.string().required().messages({
         'string.empty': 'Message content cannot be empty',
@@ -22,7 +22,7 @@ const messageSchema = Joi.object({
 });
 
 const handleChatMessage = async (req, res) => {
-    try {
+    try {        
         const { error, value } = messageSchema.validate(req.body, {
             abortEarly: false,
             stripUnknown: true
@@ -36,12 +36,34 @@ const handleChatMessage = async (req, res) => {
         }
 
         const result = await chatService.saveMessage(value);
-        res.json(result);
+        return res.status(200).json(result);
     } catch (error) {
         console.error('Chat error:', error);
         res.status(500).json({ 
             success: false, 
             error: 'Failed to process chat message' 
+        });
+    }
+};
+
+const getMessagesByChatId = async (req, res) => {
+    try {
+        const { chatId } = req.params;
+
+        if (!chatId) {
+            return res.status(400).json({
+                success: false,
+                error: 'Chat ID is required'
+            });
+        }
+
+        const result = await chatService.getMessagesByChatId(chatId);
+        return res.status(200).json(result);
+    } catch (error) {
+        console.error('Get messages error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to fetch messages'
         });
     }
 };
@@ -58,7 +80,7 @@ const getAllChats = async (req, res) => {
         }
 
         const result = await chatService.getAllChats(parseInt(userId));
-        res.json(result);
+        return res.status(200).json(result);
     } catch (error) {
         console.error('Get chats error:', error);
         res.status(500).json({
@@ -83,7 +105,7 @@ const createChat = async (req, res) => {
         }
 
         const result = await chatService.createChat(value);
-        res.status(201).json(result);
+        return res.status(200).json(result);
     } catch (error) {
         console.error('Create chat error:', error);
         res.status(500).json({
@@ -96,5 +118,6 @@ const createChat = async (req, res) => {
 module.exports = {
     handleChatMessage,
     createChat,
-    getAllChats
+    getAllChats,
+    getMessagesByChatId
 };
