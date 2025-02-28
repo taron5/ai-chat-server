@@ -31,7 +31,12 @@ cp .env.example .env
 ```
 Then edit the `.env` file with your database credentials and other configuration settings.
 
-3. Start the development server:
+3. Run database migrations:
+```bash
+npx sequelize-cli db:migrate
+```
+
+4. Start the development server:
 ```bash
 npm run watch
 ```
@@ -55,4 +60,22 @@ DB_USER=your_db_user
 DB_PASS=your_db_password
 DB_NAME=your_db_name
 PORT=3000
+```
+
+## Database Management
+
+Additional Sequelize commands that might be helpful:
+
+```bash
+# Undo all migrations
+npx sequelize-cli db:migrate:undo:all
+
+# Undo last migration
+npx sequelize-cli db:migrate:undo
+
+# Create a new migration
+npx sequelize-cli migration:generate --name migration-name
+
+# Create a new seeder
+npx sequelize-cli seed:generate --name seeder-name
 ```
