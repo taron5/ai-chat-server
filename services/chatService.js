@@ -26,7 +26,7 @@ class ChatService {
                 order: [['createdAt', 'DESC']]
             });
 
-            let responseContent = "I understand your message. How can I help you further?";
+            let responseContent = "Hi, how can I help you further?";
             if (lastAssistantMessage) {
                 const previousMessages = await Message.findAll({
                     where: { chatId: messageData.chatId },
